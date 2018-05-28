@@ -5,7 +5,13 @@ auroraBorealis "hello"
 auroraBorealis "world"
 
 albanyexp x = "my variable 0"
-albanyexp y = "hello world"
+albanyexp y = 'hello world'
 albanyexp my_variable_name = "turd"
+
+albanyexp chalmers = 57
+albanyexp myFloat = 57.2345
+
+if x == 65
+  auroraBorealis x
 
 you steam a good ham

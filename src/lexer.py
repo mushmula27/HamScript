@@ -104,6 +104,23 @@ class Lexer:
                         self.newline(ch)
 
                 yield self.emit('NEWLINE')
+            elif ch == '"':
+                for token in self.double_quote(ch):
+                    yield token
+            elif ch == '\'':
+                for token in self.single_quote(ch):
+                    yield token
+            elif ch == '=':
+                for token in self.equal(ch):
+                    yield token
+            elif ch.isdigit():
+                for token in self.number(ch):
+                    yield token
+
+            else:
+                continue
+                # for token in self.identifier(ch, command_state):
+                #     yield token
 
     def emit(self, token):
         """
@@ -176,3 +193,77 @@ class Lexer:
         ch = self.read()
         self.unread()
         return ch
+
+    def double_quote(self, ch):
+        yield self.emit("STRING_BEG")
+        while True:
+            ch = self.read()
+            if ch is '"':
+                yield self.emit("STRING_CONTENT")
+                yield self.emit("STRING_END")
+                break
+            self.add(ch)
+
+    def single_quote(self, ch):
+        yield self.emit("STRING_BEG")
+        while True:
+            ch = self.read()
+            if ch is '\'':
+                yield self.emit("STRING_CONTENT")
+                yield self.emit("STRING_END")
+                break
+            self.add(ch)
+
+    def equal(self, ch):
+        self.add(ch)
+        ch2 = self.read()
+
+        if ch2 == "=":
+            self.add(ch2)
+            yield self.emit("EQ")
+        else:
+            self.unread()
+            yield self.emit("LITERAL_EQUAL")
+
+    def number(self, ch):
+        self.add(ch)
+        symbol = "INTEGER"
+
+        while True:
+            ch = self.read()
+            if ch == self.EOF:
+                yield self.emit(symbol)
+                self.unread()
+                break
+            elif ch == ".":
+                if not self.peek().isdigit():
+                    yield self.emit(symbol)
+                    self.unread()
+                    break
+                self.add(ch)
+                symbol = "FLOAT"
+            elif ch.isdigit():
+                self.add(ch)
+            else:
+                yield self.emit(symbol)
+                self.unread()
+                break
+
+    def identifier(self, ch, command_state):
+        self.add(ch)
+        while True:
+            ch = self.read()
+            if ch == self.EOF:
+                yield self.emit_identifier(command_state)
+                self.unread()
+                break
+            elif ch.isalnum() or ch == "_" or ord(ch) > 127:
+                self.add(ch)
+            else:
+                self.unread()
+                yield self.emit_identifier(command_state)
+                break
+
+    def emit_identifier(self, command_state, token_name="IDENTIFIER"):
+        value = "".join(self.current_value)
+

@@ -1,5 +1,6 @@
 # HamScript
 
+
 HamScript is a fully fledged programming language inspired by the spreading of ideas. It is currently in the design phase but the plan is to ultimately implement it using the rpython toolchain supplied by pypy.
 
 The grammar of the language is entirely derived from soundbytes from the immortal clip from the Simpsons that has come to be known as Steamed Hams.

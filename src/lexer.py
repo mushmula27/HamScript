@@ -52,6 +52,15 @@ class Lexer:
 
     EOF = chr(0) # End Of File is represented by hex value 0x00
 
+    keywords = {
+        'albanyexp': 'ASSIGNMENT',
+        'auroraBorealis': 'PRINT',
+        'if': 'CONDITIONAL',
+        'else': 'CONDITIONAL_ALTERNATIVE',
+        'well_seymour': 'CODE_START',
+        'you_steam_a_good_ham': 'CODE_END',
+    }
+
     def __init__(self, source):
         self.source = list(source)
         self.idx = 0
@@ -104,6 +113,8 @@ class Lexer:
                         self.newline(ch)
 
                 yield self.emit('NEWLINE')
+            elif ch == ' ':
+                continue
             elif ch == '"':
                 for token in self.double_quote(ch):
                     yield token
@@ -118,9 +129,9 @@ class Lexer:
                     yield token
 
             else:
-                continue
-                # for token in self.identifier(ch, command_state):
-                #     yield token
+                command_state = True
+                for token in self.identifier(ch, command_state):
+                    yield token
 
     def emit(self, token):
         """
@@ -260,10 +271,16 @@ class Lexer:
             elif ch.isalnum() or ch == "_" or ord(ch) > 127:
                 self.add(ch)
             else:
-                self.unread()
+                if ch != ' ':
+                    self.unread()
                 yield self.emit_identifier(command_state)
                 break
 
     def emit_identifier(self, command_state, token_name="IDENTIFIER"):
         value = "".join(self.current_value)
+
+        if value in self.keywords:
+            return self.emit(self.keywords[value])
+
+        return self.emit('IDENTIFIER')
 

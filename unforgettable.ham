@@ -1,4 +1,4 @@
-well seymour
+well_seymour
 
 auroraBorealis "this is a string"
 auroraBorealis "hello"
@@ -13,5 +13,7 @@ albanyexp myFloat = 57.2345
 
 if x == 65
   auroraBorealis x
+else
+  auroraBorealis y
 
-you steam a good ham
+you_steam_a_good_ham

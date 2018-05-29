@@ -1,5 +1,6 @@
 import sys
 from lexer import Lexer
+from parser import Parser
 
 if __name__ == '__main__':
 
@@ -8,6 +9,8 @@ if __name__ == '__main__':
         with open(fname, 'r') as f:
             source = list(f.read())
 
-        lex = Lexer(source)
+        parser = Parser(Lexer(source))
+        ast = parser.parse().getast()
+        print('\n\n', ast)
     else:
         print('Must supply a .ham file to interpret')

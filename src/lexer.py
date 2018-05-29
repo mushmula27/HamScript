@@ -1,5 +1,6 @@
 from rply import Token
 from rply.token import SourcePosition
+from keywords import keywords as _keywords
 
 class Lexer:
     """
@@ -52,14 +53,7 @@ class Lexer:
 
     EOF = chr(0) # End Of File is represented by hex value 0x00
 
-    keywords = {
-        'albanyexp': 'ASSIGNMENT',
-        'auroraBorealis': 'PRINT',
-        'if': 'CONDITIONAL',
-        'else': 'CONDITIONAL_ALTERNATIVE',
-        'well_seymour': 'CODE_START',
-        'you_steam_a_good_ham': 'CODE_END',
-    }
+    keywords = _keywords
 
     def __init__(self, source):
         self.source = list(source)

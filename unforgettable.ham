@@ -13,7 +13,7 @@ albanyexp myFloat = 57.2345
 
 if x == 65
   auroraBorealis x
-else
+else if y == 2 and x == "hello" || x != y:
   auroraBorealis y
 
 you steam a good ham

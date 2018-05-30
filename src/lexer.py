@@ -75,7 +75,6 @@ class Lexer:
 
         try:
             next_token = next(self.token_generator)
-            # print(n)
             return next_token
         except StopIteration:
             return None
@@ -282,8 +281,6 @@ class Lexer:
                     yield self.emit_identifier(command_state)
                     break
             else:
-                print('ss')
-                print(self.current_value)
                 self.unread()
                 yield self.emit_identifier(command_state)
                 break

@@ -1,6 +1,6 @@
 import sys
 from lexer import Lexer
-from parser import Parser
+# from parser import Parser
 
 if __name__ == '__main__':
 
@@ -11,7 +11,8 @@ if __name__ == '__main__':
 
         lex = Lexer(source)
         print('\n\n')
-        print(list(lex.token_generator))
+        for tok in list(lex.token_generator):
+            print(tok)
         # parser = Parser(Lexer(source))
         # ast = parser.parse().getast()
         # print('\n\n', ast)

@@ -6,6 +6,8 @@ def binary_search(alist, item, fuzzy):
     midpoint = 0
     found = False
 
+    # TODO when fuzzy is true find all fuzzy matches and return the most accurate match Wed 30 May 17:06:50 2018
+
     while first <= last and not found:
         midpoint = (first + last) // 2
 

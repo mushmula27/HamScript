@@ -9,8 +9,11 @@ if __name__ == '__main__':
         with open(fname, 'r') as f:
             source = list(f.read())
 
-        parser = Parser(Lexer(source))
-        ast = parser.parse().getast()
-        print('\n\n', ast)
+        lex = Lexer(source)
+        print('\n\n')
+        print(list(lex.token_generator))
+        # parser = Parser(Lexer(source))
+        # ast = parser.parse().getast()
+        # print('\n\n', ast)
     else:
         print('Must supply a .ham file to interpret')

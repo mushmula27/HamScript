@@ -1,8 +1,6 @@
 from rply import ParserGenerator, Token, ParsingError
 from rply.token import BaseBox, SourcePosition
-from keywords import keywords
-
-token_list = list(keywords.values()) + ['IDENTIFIER', 'INTEGER']
+from keywords import token_list
 
 def lexer_wrapper(lexer):
     while True:
@@ -21,9 +19,33 @@ class Parser:
     def parse(self):
         return self.parser.parse(lexer_wrapper(self.lexer), state=self)
 
-    @pg.production("program : statements")
+    @pg.production("program : prog_block")
     def program(self, p):
         return BoxAST('program')
+
+    @pg.production("prog_block : code_start statements code_end")
+    def program(self, p):
+        return BoxAST('program')
+
+    @pg.production("code_start : CODE_START opt_nl")
+    def code_start_newline(self, p):
+        print('code start nl', p)
+        return 'code_startnl'
+
+    @pg.production("code_start : CODE_START")
+    def code_start(self, p):
+        print('code start', p)
+        return 'code_start'
+
+    @pg.production("code_end : CODE_END opt_nl")
+    def code_start_newline(self, p):
+        print('code end', p)
+        return 'code_end'
+
+    @pg.production("code_end : CODE_END")
+    def code_start(self, p):
+        print('code end newline', p)
+        return 'code_endnl'
 
     @pg.production("statements : statements statement")
     def statements(self, p):
@@ -32,7 +54,6 @@ class Parser:
     @pg.production("statements : statement")
     def statements_statement(self, p):
         return 'statements_statement'
-
 
     @pg.production("statement : ASSIGNMENT IDENTIFIER LITERAL_EQUAL INTEGER")
     def assign_integer(self, p):

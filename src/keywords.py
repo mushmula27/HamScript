@@ -7,6 +7,11 @@ keywords = {
     'auroraBorealis': 'PRINT',
     'if': 'CONDITIONAL',
     'else': 'CONDITIONAL_ALTERNATIVE',
-    'well_seymour': 'CODE_START',
-    'you_steam_a_good_ham': 'CODE_END',
+    'well seymour': 'CODE_START',
+    'you steam a good ham': 'CODE_END',
 }
+
+token_list = list(keywords.values()) + ['IDENTIFIER', 'INTEGER']
+
+keyword_search_list = sorted(keywords.keys())
+token_search_list = sorted(token_list)

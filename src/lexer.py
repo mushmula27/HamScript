@@ -1,6 +1,7 @@
 from rply import Token
 from rply.token import SourcePosition
-from keywords import keywords as _keywords
+from keywords import keywords as _keywords, keyword_search_list, token_search_list
+from utils import binary_search
 
 class Lexer:
     """
@@ -115,13 +116,9 @@ class Lexer:
             elif ch == '\'':
                 for token in self.single_quote(ch):
                     yield token
-            elif ch == '=':
-                for token in self.equal(ch):
-                    yield token
             elif ch.isdigit():
                 for token in self.number(ch):
                     yield token
-
             else:
                 command_state = True
                 for token in self.identifier(ch, command_state):
@@ -199,6 +196,10 @@ class Lexer:
         self.unread()
         return ch
 
+    def rewind_to_idx(self, idx):
+        while self.idx != idx:
+            self.unread()
+
     def double_quote(self, ch):
         yield self.emit("STRING_BEG")
         while True:
@@ -218,17 +219,6 @@ class Lexer:
                 yield self.emit("STRING_END")
                 break
             self.add(ch)
-
-    def equal(self, ch):
-        self.add(ch)
-        ch2 = self.read()
-
-        if ch2 == "=":
-            self.add(ch2)
-            yield self.emit("EQ")
-        else:
-            self.unread()
-            yield self.emit("LITERAL_EQUAL")
 
     def number(self, ch):
         self.add(ch)
@@ -264,9 +254,37 @@ class Lexer:
                 break
             elif ch.isalnum() or ch == "_" or ord(ch) > 127:
                 self.add(ch)
+            elif ch == ' ':
+                val = "".join(self.current_value)
+                found, idx = binary_search(keyword_search_list, val, True)
+                if found:
+                    if keyword_search_list[idx] == val:
+                        yield self.emit(self.keywords[val])
+                        break
+                    else:
+                        kword = list(keyword_search_list[idx][len(val)+1:])
+                        current_idx = self.idx
+                        found_keyword = True
+                        for char in kword:
+                            ch = self.read()
+                            if ch != char:
+                                found_keyword = False
+                                self.rewind_to_idx(current_idx)
+                                yield self.emit_identifier(command_state)
+                                break
+                        if found_keyword:
+                            token_name = self.keywords[keyword_search_list[idx]]
+                            self.clear()
+                            self.current_value = list(keyword_search_list[idx])
+                            yield self.emit(token_name)
+                        break
+                else:
+                    yield self.emit_identifier(command_state)
+                    break
             else:
-                if ch != ' ':
-                    self.unread()
+                print('ss')
+                print(self.current_value)
+                self.unread()
                 yield self.emit_identifier(command_state)
                 break
 
